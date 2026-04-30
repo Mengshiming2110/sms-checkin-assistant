@@ -36,7 +36,17 @@ class MainFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            enableServiceInternal()
+            checkSmsPermissionThenEnable()
+        } else {
+            updateToggleUI(false)
+        }
+    }
+
+    private val smsPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            checkNotificationThenEnable()
         } else {
             updateToggleUI(false)
         }
@@ -118,6 +128,28 @@ class MainFragment : Fragment() {
     }
 
     private fun enableService() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            smsPermissionLauncher.launch(Manifest.permission.RECEIVE_SMS)
+            return
+        }
+        checkNotificationThenEnable()
+    }
+
+    private fun checkSmsPermissionThenEnable() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(), Manifest.permission.RECEIVE_SMS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            checkNotificationThenEnable()
+        } else {
+            updateToggleUI(false)
+        }
+    }
+
+    private fun checkNotificationThenEnable() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     requireContext(), Manifest.permission.POST_NOTIFICATIONS
