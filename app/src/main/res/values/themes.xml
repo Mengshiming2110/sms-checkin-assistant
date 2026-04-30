@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.SmsCheckIn" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/blue_container</item>
+        <item name="colorOnPrimaryContainer">@color/blue_dark</item>
+        <item name="colorSecondary">@color/blue_secondary</item>
+        <item name="colorOnSecondary">@color/white</item>
+        <item name="android:colorBackground">@color/surface_container</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurface">@color/gray_dark</item>
+        <item name="colorOnSurfaceVariant">@color/gray_text</item>
+        <item name="colorError">@color/red_error</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@color/surface_container</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="CardTitleText" parent="TextAppearance.Material3.TitleMedium">
+        <item name="android:textColor">@color/gray_dark</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="CardDescText" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:textColor">@color/gray_text</item>
+        <item name="android:lineSpacingExtra">4sp</item>
+    </style>
+
+    <style name="StatsNumberText" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="android:textColor">@color/blue_primary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="StatsLabelText" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textColor">@color/gray_text</item>
+    </style>
+</resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_primary">#FFE8A88C</color>
+    <color name="blue_dark">#FFE8A88C</color>
+    <color name="blue_darker">#FFFBE9DD</color>
+    <color name="blue_container">#FF5C3D2E</color>
+    <color name="blue_secondary">#FFD9A88C</color>
+    <color name="blue_light">#FF5C3D2E</color>
+
+    <color name="green_status">#FF8BB5A0</color>
+    <color name="green_dark">#FF9DC5B0</color>
+    <color name="green_container">#FF2D4A3C</color>
+    <color name="green_light">#FF2D4A3C</color>
+
+    <color name="red_error">#FFE8A88C</color>
+    <color name="red_dark">#FFD9A88C</color>
+    <color name="red_container">#FF5C3D2E</color>
+
+    <color name="orange_status">#FFE8A88C</color>
+    <color name="orange_container">#FF5C3D2E</color>
+
+    <color name="purple_accent">#FFD9A88C</color>
+    <color name="purple_container">#FF3D3D3D</color>
+
+    <color name="surface">#FF1A1A1A</color>
+    <color name="surface_variant">#FF2D2D2D</color>
+    <color name="surface_container">#FF1A1A1A</color>
+    <color name="surface_container_low">#FF141414</color>
+    <color name="surface_container_high">#FF2A2A2A</color>
+
+    <color name="gray_bg">#FF1A1A1A</color>
+    <color name="gray_light">#FF2A2A2A</color>
+    <color name="gray_text">#FFE8E2DC</color>
+    <color name="gray_text_light">#FFB0A8A0</color>
+    <color name="gray_dark">#FFFAF8F5</color>
+    <color name="gray_divider">#FF3D3D3D</color>
+
+    <color name="white">#FF000000</color>
+    <color name="black">#FFFAF8F5</color>
+
+    <color name="card_bg">#FF2A2A2A</color>
+    <color name="card_stroke">#FF3D3D3D</color>
+    <color name="divider">#FF3D3D3D</color>
+
+    <color name="timeline_dot">#FFE8A88C</color>
+    <color name="timeline_line">#FF3D3D3D</color>
+
+    <color name="icon_bg_primary">#FFE8A88C</color>
+    <color name="icon_bg_success">#FF8BB5A0</color>
+    <color name="icon_bg_warning">#FFE8A88C</color>
+    <color name="icon_bg_error">#FFE8A88C</color>
+    <color name="icon_tint">#FF1A1A1A</color>
+</resources>
