@@ -41,6 +41,8 @@ class SettingsFragment : Fragment() {
         setupProactiveTrigger()
         setupAlert()
         setupBatteryOptimization()
+        setupWechatKeywordEditor()
+        setupWechatWhitelistEditor()
         setupOverlayPermission()
         setupUpdateChecker()
     }
@@ -86,7 +88,7 @@ class SettingsFragment : Fragment() {
         val keywords = if (savedKeywordsJson != null) {
             SmsReceiver.parseKeywords(savedKeywordsJson)
         } else {
-            listOf("钉钉打卡")
+            emptyList()
         }
         SmsReceiver.keywords = keywords
         updateKeywordDisplay(keywords)
@@ -109,7 +111,7 @@ class SettingsFragment : Fragment() {
         val currentKeywords = if (savedKeywordsJson != null) {
             SmsReceiver.parseKeywords(savedKeywordsJson).toMutableList()
         } else {
-            mutableListOf("钉钉打卡")
+            mutableListOf()
         }
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_keyword, null)
@@ -801,5 +803,202 @@ class SettingsFragment : Fragment() {
             }
             .setNegativeButton(R.string.update_later, null)
             .show()
+    }
+
+    /* ========== 微信关键字 ========== */
+
+    private fun setupWechatKeywordEditor() {
+        val savedJson = prefs.getString("wechat_keywords", null)
+        val keywords = if (savedJson != null) {
+            SmsReceiver.parseKeywords(savedJson)
+        } else {
+            emptyList()
+        }
+        SmsReceiver.wechatKeywords = keywords.toMutableList()
+        updateWechatKeywordDisplay(keywords)
+
+        binding.wechatKeywordCard.setOnClickListener {
+            showWechatKeywordDialog()
+        }
+    }
+
+    private fun updateWechatKeywordDisplay(keywords: List<String>) {
+        if (keywords.isEmpty()) {
+            binding.wechatKeywordText.text = getString(R.string.wechat_keyword_empty)
+        } else if (keywords.size == 1) {
+            binding.wechatKeywordText.text = keywords[0]
+        } else {
+            binding.wechatKeywordText.text = getString(R.string.wechat_keyword_multiple, keywords.size)
+        }
+    }
+
+    private fun showWechatKeywordDialog() {
+        val savedJson = prefs.getString("wechat_keywords", null)
+        val currentKeywords = if (savedJson != null) {
+            SmsReceiver.parseKeywords(savedJson).toMutableList()
+        } else {
+            mutableListOf()
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_keyword, null)
+        val keywordListContainer = dialogView.findViewById<android.widget.LinearLayout>(R.id.keywordListContainer)
+        val keywordInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.keywordInput)
+        val emptyHint = dialogView.findViewById<TextView>(R.id.emptyHint)
+        val inputLayout = keywordInput.parent.parent as com.google.android.material.textfield.TextInputLayout
+
+        keywordInput.hint = getString(R.string.keyword_hint)
+
+        fun refreshKeywordList() {
+            keywordListContainer.removeAllViews()
+            if (currentKeywords.isEmpty()) {
+                emptyHint.visibility = View.VISIBLE
+            } else {
+                emptyHint.visibility = View.GONE
+                currentKeywords.forEach { keyword ->
+                    val itemView = layoutInflater.inflate(R.layout.item_keyword, keywordListContainer, false)
+                    itemView.findViewById<TextView>(R.id.keywordText).text = keyword
+                    itemView.findViewById<android.widget.ImageButton>(R.id.deleteButton).setOnClickListener {
+                        currentKeywords.remove(keyword)
+                        refreshKeywordList()
+                    }
+                    keywordListContainer.addView(itemView)
+                }
+            }
+        }
+
+        refreshKeywordList()
+
+        inputLayout.setEndIconOnClickListener {
+            val newKeyword = keywordInput.text.toString().trim()
+            if (newKeyword.isNotEmpty()) {
+                if (currentKeywords.contains(newKeyword)) {
+                    Toast.makeText(requireContext(), R.string.wechat_keyword_exists, Toast.LENGTH_SHORT).show()
+                } else {
+                    currentKeywords.add(newKeyword)
+                    keywordInput.text?.clear()
+                    refreshKeywordList()
+                    Toast.makeText(requireContext(), R.string.wechat_keyword_added, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
+        dialog.setContentView(dialogView)
+
+        dialogView.findViewById<android.widget.Button>(R.id.cancelButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            if (currentKeywords.isEmpty()) {
+                Toast.makeText(requireContext(), R.string.wechat_keyword_empty_error, Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val json = SmsReceiver.keywordsToJson(currentKeywords)
+            prefs.edit().putString("wechat_keywords", json).apply()
+            SmsReceiver.wechatKeywords = currentKeywords
+            SmsReceiver.notifyConfigChanged()
+            updateWechatKeywordDisplay(currentKeywords)
+            Toast.makeText(requireContext(), R.string.wechat_keyword_saved, Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    /* ========== 微信白名单 ========== */
+
+    private fun setupWechatWhitelistEditor() {
+        val savedJson = prefs.getString("wechat_whitelist", null)
+        val whitelist = if (savedJson != null) {
+            SmsReceiver.parseKeywords(savedJson)
+        } else {
+            emptyList()
+        }
+        SmsReceiver.wechatWhitelist = whitelist.toMutableList()
+        updateWechatWhitelistDisplay(whitelist)
+
+        binding.wechatWhitelistCard.setOnClickListener {
+            showWechatWhitelistDialog()
+        }
+    }
+
+    private fun updateWechatWhitelistDisplay(whitelist: List<String>) {
+        if (whitelist.isEmpty()) {
+            binding.wechatWhitelistText.text = getString(R.string.wechat_whitelist_empty)
+        } else {
+            binding.wechatWhitelistText.text = getString(R.string.wechat_whitelist_multiple, whitelist.size)
+        }
+    }
+
+    private fun showWechatWhitelistDialog() {
+        val savedJson = prefs.getString("wechat_whitelist", null)
+        val currentWhitelist = if (savedJson != null) {
+            SmsReceiver.parseKeywords(savedJson).toMutableList()
+        } else {
+            mutableListOf()
+        }
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_keyword, null)
+        val keywordListContainer = dialogView.findViewById<android.widget.LinearLayout>(R.id.keywordListContainer)
+        val keywordInput = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.keywordInput)
+        val emptyHint = dialogView.findViewById<TextView>(R.id.emptyHint)
+        val inputLayout = keywordInput.parent.parent as com.google.android.material.textfield.TextInputLayout
+
+        keywordInput.hint = getString(R.string.wechat_whitelist_hint)
+        emptyHint.text = getString(R.string.wechat_whitelist_empty)
+
+        fun refreshWhitelistList() {
+            keywordListContainer.removeAllViews()
+            if (currentWhitelist.isEmpty()) {
+                emptyHint.visibility = View.VISIBLE
+            } else {
+                emptyHint.visibility = View.GONE
+                currentWhitelist.forEach { user ->
+                    val itemView = layoutInflater.inflate(R.layout.item_keyword, keywordListContainer, false)
+                    itemView.findViewById<TextView>(R.id.keywordText).text = user
+                    itemView.findViewById<android.widget.ImageButton>(R.id.deleteButton).setOnClickListener {
+                        currentWhitelist.remove(user)
+                        refreshWhitelistList()
+                    }
+                    keywordListContainer.addView(itemView)
+                }
+            }
+        }
+
+        refreshWhitelistList()
+
+        inputLayout.setEndIconOnClickListener {
+            val newUser = keywordInput.text.toString().trim()
+            if (newUser.isNotEmpty()) {
+                if (currentWhitelist.contains(newUser)) {
+                    Toast.makeText(requireContext(), R.string.wechat_whitelist_exists, Toast.LENGTH_SHORT).show()
+                } else {
+                    currentWhitelist.add(newUser)
+                    keywordInput.text?.clear()
+                    refreshWhitelistList()
+                    Toast.makeText(requireContext(), R.string.wechat_whitelist_added, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        val dialog = com.google.android.material.bottomsheet.BottomSheetDialog(requireContext())
+        dialog.setContentView(dialogView)
+
+        dialogView.findViewById<android.widget.Button>(R.id.cancelButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            val json = SmsReceiver.keywordsToJson(currentWhitelist)
+            prefs.edit().putString("wechat_whitelist", json).apply()
+            SmsReceiver.wechatWhitelist = currentWhitelist
+            SmsReceiver.notifyConfigChanged()
+            updateWechatWhitelistDisplay(currentWhitelist)
+            Toast.makeText(requireContext(), R.string.wechat_whitelist_saved, Toast.LENGTH_SHORT).show()
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
