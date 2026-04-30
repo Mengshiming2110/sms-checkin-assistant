@@ -15,6 +15,8 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <!-- 悬浮窗权限（Android 12+ 后台自动启动 Activity 必需） -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <!-- 锁屏/息屏时保持 CPU 唤醒完成打卡 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 网络（版本更新检查） -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- 安装 APK（版本更新） -->
