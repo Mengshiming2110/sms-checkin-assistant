@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -31,7 +30,7 @@ class MainFragment : Fragment() {
     private lateinit var prefs: android.content.SharedPreferences
     private val handler = Handler(Looper.getMainLooper())
     private var lastLogHash = 0
-    private var suppressSwitchListener = false
+    private var toggleDebounce = false
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -39,10 +38,7 @@ class MainFragment : Fragment() {
         if (isGranted) {
             enableServiceInternal()
         } else {
-            suppressSwitchListener = true
-            binding.serviceSwitch.isChecked = false
-            suppressSwitchListener = false
-            updateServiceDesc(false)
+            updateToggleUI(false)
         }
     }
 
@@ -68,12 +64,15 @@ class MainFragment : Fragment() {
             showGuideDialog()
         }
 
-        binding.serviceSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (suppressSwitchListener) return@setOnCheckedChangeListener
-            if (isChecked) {
-                enableService()
-            } else {
+        binding.serviceToggle.setOnClickListener {
+            if (toggleDebounce) return@setOnClickListener
+            toggleDebounce = true
+            handler.postDelayed({ toggleDebounce = false }, 600)
+
+            if (SmsReceiver.isEnabled) {
                 disableService()
+            } else {
+                enableService()
             }
         }
 
@@ -83,20 +82,14 @@ class MainFragment : Fragment() {
             requireContext().startForegroundService(Intent(requireContext(), CheckInForegroundService::class.java))
         }
 
-        suppressSwitchListener = true
-        binding.serviceSwitch.isChecked = SmsReceiver.isEnabled
-        suppressSwitchListener = false
-
+        updateToggleUI(SmsReceiver.isEnabled)
         refreshStats()
         refreshLog()
     }
 
     override fun onResume() {
         super.onResume()
-        suppressSwitchListener = true
-        binding.serviceSwitch.isChecked = SmsReceiver.isEnabled
-        suppressSwitchListener = false
-        updateServiceDesc(SmsReceiver.isEnabled)
+        updateToggleUI(SmsReceiver.isEnabled)
         refreshStats()
         refreshLog()
         handler.postDelayed(refreshRunnable, 3000)
@@ -112,11 +105,15 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    private fun updateServiceDesc(enabled: Boolean) {
-        binding.serviceDescText.text = if (enabled) {
-            getString(R.string.service_running)
+    private fun updateToggleUI(enabled: Boolean) {
+        if (enabled) {
+            binding.serviceToggle.background = resources.getDrawable(R.drawable.toggle_bg_on, null)
+            binding.serviceToggleText.text = "运行中"
+            binding.toggleSubText.text = "已开启打卡监听"
         } else {
-            getString(R.string.service_desc)
+            binding.serviceToggle.background = resources.getDrawable(R.drawable.toggle_bg_off, null)
+            binding.serviceToggleText.text = "已暂停"
+            binding.toggleSubText.text = "点击开启打卡服务"
         }
     }
 
@@ -141,10 +138,7 @@ class MainFragment : Fragment() {
         KeepAliveWorker.schedule(requireContext())
         MissedCheckInReceiver.schedule(requireContext())
         ProactiveTriggerReceiver.scheduleAll(requireContext())
-        suppressSwitchListener = true
-        binding.serviceSwitch.isChecked = true
-        suppressSwitchListener = false
-        updateServiceDesc(true)
+        updateToggleUI(true)
     }
 
     private fun disableService() {
@@ -155,10 +149,7 @@ class MainFragment : Fragment() {
         KeepAliveWorker.cancel(requireContext())
         MissedCheckInReceiver.cancel(requireContext())
         ProactiveTriggerReceiver.cancelAll(requireContext())
-        suppressSwitchListener = true
-        binding.serviceSwitch.isChecked = false
-        suppressSwitchListener = false
-        updateServiceDesc(false)
+        updateToggleUI(false)
     }
 
     private fun showGuideDialog() {

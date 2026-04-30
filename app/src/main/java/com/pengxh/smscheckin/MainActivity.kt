@@ -13,6 +13,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.toolbar.title = ""
+
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, MainFragment())
@@ -22,14 +24,14 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_dashboard -> {
-                    binding.toolbar.title = getString(R.string.app_name)
+                    binding.toolbar.title = ""
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, MainFragment())
                         .commit()
                     true
                 }
                 R.id.nav_settings -> {
-                    binding.toolbar.title = getString(R.string.settings)
+                    binding.toolbar.title = "设置"
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.fragmentContainer, SettingsFragment())
                         .commit()
