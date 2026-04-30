@@ -45,7 +45,8 @@
             android:id="@+id/sectionCoreContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <!-- 触发关键字 -->
             <com.google.android.material.card.MaterialCardView
