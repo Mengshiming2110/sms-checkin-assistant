@@ -57,7 +57,8 @@ object UpdateChecker {
                 val downloadUrl = assets.getJSONObject(0).getString("browser_download_url")
 
                 val latestVersion = tagName.trimStart('v')
-                val currentVersion = BuildConfig.VERSION_NAME
+                val pi = context.packageManager.getPackageInfo(context.packageName, 0)
+                val currentVersion = pi.versionName ?: "1.0"
 
                 if (isNewer(latestVersion, currentVersion)) {
                     onResult(Result.success(UpdateInfo(latestVersion, body, downloadUrl)))

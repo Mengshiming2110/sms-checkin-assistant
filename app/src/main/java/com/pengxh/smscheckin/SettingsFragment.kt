@@ -728,8 +728,11 @@ class SettingsFragment : Fragment() {
 
     /* ========== 版本更新 ========== */
 
+    private var currentVersion: String = ""
+
     private fun setupUpdateChecker() {
-        val currentVersion = BuildConfig.VERSION_NAME
+        val pi = requireContext().packageManager.getPackageInfo(requireContext().packageName, 0)
+        currentVersion = pi.versionName ?: "1.0"
         binding.updateStatusText.text = getString(R.string.update_current_version, currentVersion)
 
         binding.updateBtn.setOnClickListener {
@@ -767,7 +770,7 @@ class SettingsFragment : Fragment() {
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("${getString(R.string.update_latest_new, info.version)}")
-            .setMessage("${getString(R.string.update_current_version, BuildConfig.VERSION_NAME)}$changelog")
+            .setMessage("${getString(R.string.update_current_version, currentVersion)}$changelog")
             .setPositiveButton(R.string.update_install) { _, _ ->
                 UpdateChecker.downloadAndInstall(requireContext(), info.downloadUrl)
                 binding.updateStatusText.text = getString(R.string.update_downloading)
