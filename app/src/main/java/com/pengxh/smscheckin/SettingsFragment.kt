@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -31,6 +32,7 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prefs = requireContext().getSharedPreferences("sms_checkin_prefs", Context.MODE_PRIVATE)
 
+        setupSectionHeaders()
         setupKeywordEditor()
         setupWhitelistEditor()
         setupNotifMonitor()
@@ -54,6 +56,27 @@ class SettingsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /* ========== 分区折叠 ========== */
+
+    private fun setupSectionHeaders() {
+        bindSection(binding.sectionCoreHeader, binding.sectionCoreArrow, binding.sectionCoreContent)
+        bindSection(binding.sectionTimeHeader, binding.sectionTimeArrow, binding.sectionTimeContent)
+        bindSection(binding.sectionPermissionHeader, binding.sectionPermissionArrow, binding.sectionPermissionContent)
+        bindSection(binding.sectionOtherHeader, binding.sectionOtherArrow, binding.sectionOtherContent)
+    }
+
+    private fun bindSection(header: View, arrow: ImageView, content: View) {
+        header.setOnClickListener {
+            if (content.visibility == View.VISIBLE) {
+                content.visibility = View.GONE
+                arrow.animate().rotation(0f).setDuration(200).start()
+            } else {
+                content.visibility = View.VISIBLE
+                arrow.animate().rotation(90f).setDuration(200).start()
+            }
+        }
     }
 
     /* ========== 关键字 ========== */

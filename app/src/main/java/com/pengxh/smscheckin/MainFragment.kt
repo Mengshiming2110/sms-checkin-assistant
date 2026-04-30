@@ -31,12 +31,7 @@ class MainFragment : Fragment() {
     private lateinit var prefs: android.content.SharedPreferences
     private val handler = Handler(Looper.getMainLooper())
     private var lastLogHash = 0
-
-    private val requestPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        updatePermissionUI(isGranted)
-    }
+    private var suppressSwitchListener = false
 
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -59,8 +54,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    private var suppressSwitchListener = false
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
@@ -75,10 +68,6 @@ class MainFragment : Fragment() {
             showGuideDialog()
         }
 
-        binding.checkButton.setOnClickListener {
-            checkAndRequestSmsPermission()
-        }
-
         binding.serviceSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (suppressSwitchListener) return@setOnCheckedChangeListener
             if (isChecked) {
@@ -86,10 +75,6 @@ class MainFragment : Fragment() {
             } else {
                 disableService()
             }
-        }
-
-        binding.serviceCardView.setOnClickListener {
-            navigateToSettings()
         }
 
         val wasServiceEnabled = prefs.getBoolean("service_enabled", false)
@@ -102,7 +87,6 @@ class MainFragment : Fragment() {
         binding.serviceSwitch.isChecked = SmsReceiver.isEnabled
         suppressSwitchListener = false
 
-        checkAndRequestSmsPermission()
         refreshStats()
         refreshLog()
     }
@@ -126,36 +110,6 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun isPermissionGranted(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            requireContext(), Manifest.permission.RECEIVE_SMS
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun checkAndRequestSmsPermission() {
-        if (!isPermissionGranted()) {
-            requestPermissionLauncher.launch(Manifest.permission.RECEIVE_SMS)
-        }
-    }
-
-    private fun updatePermissionUI(granted: Boolean) {
-        if (granted) {
-            binding.statusText.text = getString(R.string.status_granted)
-            binding.statusText.setTextColor(requireContext().getColor(R.color.green_status))
-            binding.statusIcon.setImageResource(R.drawable.ic_check)
-            binding.statusIcon.setBackgroundResource(R.drawable.icon_bg_success)
-            binding.checkButton.text = getString(R.string.status_granted)
-            binding.checkButton.isEnabled = false
-        } else {
-            binding.statusText.text = getString(R.string.status_denied)
-            binding.statusText.setTextColor(requireContext().getColor(R.color.red_error))
-            binding.statusIcon.setImageResource(R.drawable.ic_permission)
-            binding.statusIcon.setBackgroundResource(R.drawable.icon_bg_error)
-            binding.checkButton.text = getString(R.string.btn_check_permission)
-            binding.checkButton.isEnabled = true
-        }
     }
 
     private fun updateServiceDesc(enabled: Boolean) {
@@ -205,17 +159,6 @@ class MainFragment : Fragment() {
         binding.serviceSwitch.isChecked = false
         suppressSwitchListener = false
         updateServiceDesc(false)
-    }
-
-    private fun navigateToSettings() {
-        try {
-            requireActivity().supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, SettingsFragment())
-                .addToBackStack("settings")
-                .commit()
-        } catch (e: Throwable) {
-            Toast.makeText(requireContext(), "导航失败: ${e.message}", Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun showGuideDialog() {
