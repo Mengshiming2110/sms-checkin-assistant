@@ -18,8 +18,7 @@
     <string name="no_triggers">暂无触发记录</string>
     <string name="no_triggers_desc">当收到包含关键字的短信时\n会自动触发打卡流程</string>
     <string name="keyword_title">触发关键字</string>
-    <string name="keyword_default">钉钉打卡</string>
-    <string name="keyword_hint">请输入关键字</string>
+    <string name="keyword_hint">请输入触发打卡关键字，检测到对应后会自动打卡</string>
     <string name="edit_keyword">编辑关键字</string>
     <string name="keyword_multiple">已设置 %d 个关键字</string>
     <string name="keyword_add">添加关键字</string>
@@ -138,4 +137,20 @@
     <string name="update_later">稍后再说</string>
     <string name="update_download_channel">版本更新</string>
     <string name="update_download_title">短信打卡助手更新</string>
+    <!-- 微信触发 -->
+    <string name="wechat_keyword_title">微信触发关键字</string>
+    <string name="wechat_keyword_empty">未设置关键字，不会触发</string>
+    <string name="wechat_keyword_multiple">已设置 %d 个关键字</string>
+    <string name="wechat_whitelist_title">微信用户白名单</string>
+    <string name="wechat_whitelist_desc">仅白名单内微信用户的消息可触发打卡</string>
+    <string name="wechat_whitelist_empty">未设置白名单，不监听微信消息</string>
+    <string name="wechat_whitelist_hint">输入微信昵称或备注名</string>
+    <string name="wechat_whitelist_multiple">已设置 %d 个用户</string>
+    <string name="wechat_whitelist_exists">该用户已存在</string>
+    <string name="wechat_whitelist_added">用户已添加</string>
+    <string name="wechat_whitelist_saved">微信白名单已保存</string>
+    <string name="wechat_keyword_saved">微信关键字已保存</string>
+    <string name="wechat_keyword_added">微信关键字已添加</string>
+    <string name="wechat_keyword_exists">该微信关键字已存在</string>
+    <string name="wechat_keyword_empty_error">至少需要一个微信关键字</string>
 </resources>
