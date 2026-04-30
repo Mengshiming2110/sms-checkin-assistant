@@ -270,6 +270,12 @@ class SettingsFragment : Fragment() {
         }
 
         dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            val pendingText = keywordInput.text.toString().trim()
+            if (pendingText.isNotEmpty() && !currentWhitelist.contains(pendingText)) {
+                currentWhitelist.add(pendingText)
+                keywordInput.text?.clear()
+                refreshWhitelistList()
+            }
             val json = SmsReceiver.keywordsToJson(currentWhitelist)
             prefs.edit().putString("whitelist", json).apply()
             SmsReceiver.whitelist = currentWhitelist
@@ -1004,6 +1010,12 @@ class SettingsFragment : Fragment() {
         }
 
         dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            val pendingText = keywordInput.text.toString().trim()
+            if (pendingText.isNotEmpty() && !currentWhitelist.contains(pendingText)) {
+                currentWhitelist.add(pendingText)
+                keywordInput.text?.clear()
+                refreshWhitelistList()
+            }
             val json = SmsReceiver.keywordsToJson(currentWhitelist)
             prefs.edit().putString("wechat_whitelist", json).apply()
             SmsReceiver.wechatWhitelist = currentWhitelist
