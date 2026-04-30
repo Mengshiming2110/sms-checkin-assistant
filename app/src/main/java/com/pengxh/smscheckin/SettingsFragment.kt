@@ -99,7 +99,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun updateKeywordDisplay(keywords: List<String>) {
-        if (keywords.size == 1) {
+        if (keywords.isEmpty()) {
+            binding.keywordText.text = getString(R.string.keyword_hint)
+        } else if (keywords.size == 1) {
             binding.keywordText.text = keywords[0]
         } else {
             binding.keywordText.text = getString(R.string.keyword_multiple, keywords.size)
