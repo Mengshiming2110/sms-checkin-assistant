@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.PowerManager
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -25,7 +26,7 @@ class SmsReceiver : BroadcastReceiver() {
         private const val MAX_CONTENT_LENGTH = 120
 
         var isEnabled = false
-        private var keywordsList = mutableListOf("钉钉打卡")
+        private var keywordsList = mutableListOf<String>()
         var keywords: List<String>
             get() = keywordsList.toList()
             set(value) {
@@ -45,6 +46,9 @@ class SmsReceiver : BroadcastReceiver() {
 
         private var loadedConfigVersion = -1
         var configVersion = 0
+        var wechatWhitelist = mutableListOf<String>()
+        var wechatKeywords = mutableListOf<String>()
+        private var loadedWechatConfigVersion = -1
 
         fun notifyConfigChanged() {
             configVersion++
@@ -173,6 +177,13 @@ class SmsReceiver : BroadcastReceiver() {
 
         @JvmStatic
         fun openDingTalk(context: Context, source: String) {
+            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = pm.newWakeLock(
+                PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                "smscheckin:trigger"
+            )
+            wakeLock.acquire(10_000L)
+
             // Android 12+ 后台启动 Activity 需要「显示悬浮窗」权限
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
                 && !android.provider.Settings.canDrawOverlays(context)) {
@@ -251,6 +262,16 @@ class SmsReceiver : BroadcastReceiver() {
             whitelistList.addAll(parseKeywords(whitelistJson))
 
             delay = prefs.getLong("delay", 0L)
+
+            val wechatWhitelistJson = prefs.getString("wechat_whitelist", "[]") ?: "[]"
+            wechatWhitelist.clear()
+            wechatWhitelist.addAll(parseKeywords(wechatWhitelistJson))
+
+            val wechatKeywordsJson = prefs.getString("wechat_keywords", "[]") ?: "[]"
+            wechatKeywords.clear()
+            wechatKeywords.addAll(parseKeywords(wechatKeywordsJson))
+
+            loadedWechatConfigVersion = loadedConfigVersion
             loadedConfigVersion = configVersion
         }
 
