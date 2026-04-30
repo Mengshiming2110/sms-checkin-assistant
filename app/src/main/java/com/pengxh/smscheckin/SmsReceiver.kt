@@ -288,9 +288,6 @@ class SmsReceiver : BroadcastReceiver() {
                 val body = smsMessage.messageBody ?: ""
 
                 Log.d(TAG, "收到短信 - 发件人: $sender, 内容: $body")
-                Log.d(TAG, "当前关键字列表: $keywordsList, 白名单: ${if (whitelistList.isEmpty()) "无限制" else whitelistList}")
-                val debugInfo = "关键字[${keywordsList.joinToString()}] 内容[${body.take(30)}]"
-                android.widget.Toast.makeText(context, debugInfo, android.widget.Toast.LENGTH_LONG).show()
 
                 if (!isSenderAllowed(sender)) {
                     Log.d(TAG, "发送者 '$sender' 不在白名单中，跳过")
