@@ -67,7 +67,7 @@ class SmsReceiver : BroadcastReceiver() {
                 (0 until jsonArray.length()).map { jsonArray.getString(it) }
             } catch (e: Exception) {
                 Log.e(TAG, "解析关键字失败", e)
-                listOf("钉钉打卡")
+                emptyList()
             }
         }
 
@@ -253,7 +253,7 @@ class SmsReceiver : BroadcastReceiver() {
         }
 
         if (loadedConfigVersion != configVersion) {
-            val keywordsJson = prefs.getString("keywords", null) ?: "[\"钉钉打卡\"]"
+            val keywordsJson = prefs.getString("keywords", null) ?: "[]"
             keywordsList.clear()
             keywordsList.addAll(parseKeywords(keywordsJson))
 
