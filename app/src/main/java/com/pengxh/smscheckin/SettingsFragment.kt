@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.pengxh.smscheckin.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -39,6 +40,7 @@ class SettingsFragment : Fragment() {
         setupAlert()
         setupBatteryOptimization()
         setupOverlayPermission()
+        setupUpdateChecker()
     }
 
     override fun onResume() {
@@ -722,5 +724,56 @@ class SettingsFragment : Fragment() {
                 Toast.makeText(requireContext(), "无法打开悬浮窗权限设置", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    /* ========== 版本更新 ========== */
+
+    private fun setupUpdateChecker() {
+        val currentVersion = BuildConfig.VERSION_NAME
+        binding.updateStatusText.text = getString(R.string.update_current_version, currentVersion)
+
+        binding.updateBtn.setOnClickListener {
+            binding.updateBtn.isEnabled = false
+            binding.updateBtn.text = getString(R.string.update_downloading)
+            binding.updateStatusText.text = "正在检查..."
+
+            UpdateChecker.checkForUpdate(requireContext()) { result ->
+                requireActivity().runOnUiThread {
+                    binding.updateBtn.isEnabled = true
+                    binding.updateBtn.text = getString(R.string.update_check_btn)
+
+                    result.onSuccess { info ->
+                        binding.updateStatusText.text = getString(R.string.update_latest_new, info.version)
+                        showUpdateDialog(info)
+                    }
+                    result.onFailure { e ->
+                        if (e is UpdateChecker.AlreadyLatestException) {
+                            binding.updateStatusText.text = getString(R.string.update_current_version, currentVersion)
+                            Toast.makeText(requireContext(), R.string.update_latest_already, Toast.LENGTH_SHORT).show()
+                        } else {
+                            binding.updateStatusText.text = getString(R.string.update_current_version, currentVersion)
+                            Toast.makeText(requireContext(), R.string.update_network_error, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showUpdateDialog(info: UpdateChecker.UpdateInfo) {
+        val changelog = if (info.changelog.isNotEmpty()) {
+            "\n\n${getString(R.string.update_changelog_title)}:\n${info.changelog}"
+        } else ""
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("${getString(R.string.update_latest_new, info.version)}")
+            .setMessage("${getString(R.string.update_current_version, BuildConfig.VERSION_NAME)}$changelog")
+            .setPositiveButton(R.string.update_install) { _, _ ->
+                UpdateChecker.downloadAndInstall(requireContext(), info.downloadUrl)
+                binding.updateStatusText.text = getString(R.string.update_downloading)
+                Toast.makeText(requireContext(), getString(R.string.update_downloading), Toast.LENGTH_LONG).show()
+            }
+            .setNegativeButton(R.string.update_later, null)
+            .show()
     }
 }
