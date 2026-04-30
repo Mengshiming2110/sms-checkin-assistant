@@ -164,6 +164,12 @@ class SettingsFragment : Fragment() {
         }
 
         dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            val pendingText = keywordInput.text.toString().trim()
+            if (pendingText.isNotEmpty() && !currentKeywords.contains(pendingText)) {
+                currentKeywords.add(pendingText)
+                keywordInput.text?.clear()
+                refreshKeywordList()
+            }
             if (currentKeywords.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.keyword_empty_error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -892,6 +898,12 @@ class SettingsFragment : Fragment() {
         }
 
         dialogView.findViewById<android.widget.Button>(R.id.saveButton).setOnClickListener {
+            val pendingText = keywordInput.text.toString().trim()
+            if (pendingText.isNotEmpty() && !currentKeywords.contains(pendingText)) {
+                currentKeywords.add(pendingText)
+                keywordInput.text?.clear()
+                refreshKeywordList()
+            }
             if (currentKeywords.isEmpty()) {
                 Toast.makeText(requireContext(), R.string.wechat_keyword_empty_error, Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
