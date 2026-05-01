@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-01T00:00:00+08:00",
+  "title": "Design System: 短信打卡助手",
+  "extensions": {
+    "colorMeta": {
+      "terracotta": {
+        "role": "primary",
+        "displayName": "赤陶橙",
+        "canonical": "oklch(62% 0.14 45)",
+        "tonalRamp": ["#2D1B13", "#4A2D1F", "#6B3F2B", "#8D5137", "#B06543", "#D27854", "#E89B7A", "#FBE9DD"]
+      },
+      "terracotta-deep": {
+        "role": "primary-deep",
+        "displayName": "深赤陶",
+        "canonical": "oklch(55% 0.14 45)",
+        "tonalRamp": ["#241610", "#3E261A", "#5A3624", "#77462E", "#955739", "#B4694A", "#D48A6A", "#F5D5C5"]
+      },
+      "terracotta-container": {
+        "role": "primary-container",
+        "displayName": "赤陶容器",
+        "canonical": "oklch(92% 0.03 45)",
+        "tonalRamp": ["#2D2B28", "#47433E", "#625C56", "#7E7670", "#9B928B", "#B9AFA8", "#D8CEC7", "#FBE9DD"]
+      },
+      "warm-cream": {
+        "role": "neutral-bg",
+        "displayName": "暖奶油",
+        "canonical": "oklch(97% 0.005 85)",
+        "tonalRamp": ["#121110", "#242220", "#3D3A37", "#575450", "#7A7672", "#A19C98", "#C8C3BF", "#FAF8F5"]
+      },
+      "pure-white": {
+        "role": "neutral-surface-high",
+        "displayName": "纯白",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": ["#121212", "#252525", "#3D3D3D", "#575757", "#7A7A7A", "#9E9E9E", "#C8C8C8", "#FFFFFF"]
+      },
+      "near-black": {
+        "role": "neutral-text-primary",
+        "displayName": "近黑",
+        "canonical": "oklch(12% 0.005 85)",
+        "tonalRamp": ["#0D0C0B", "#1A1A1A", "#2E2D2C", "#454442", "#605E5C", "#7E7C7A", "#A09D9B", "#C8C5C3"]
+      },
+      "sage": {
+        "role": "semantic-success",
+        "displayName": "鼠尾草",
+        "canonical": "oklch(52% 0.08 165)",
+        "tonalRamp": ["#14231B", "#1F3529", "#2D4C3C", "#3C6350", "#4D7D65", "#5B8A72", "#8BB5A0", "#E8F3ED"]
+      },
+      "error-red": {
+        "role": "semantic-error",
+        "displayName": "错误红",
+        "canonical": "oklch(48% 0.12 30)",
+        "tonalRamp": ["#241310", "#3E2019", "#5A2F24", "#773E2F", "#954E3A", "#B85A42", "#D98A75", "#FDEEE8"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "统计数字", "purpose": "今日触发次数等关键指标，仅用于大数字展示。" },
+      "headline": { "displayName": "二级标题", "purpose": "最近触发时间等需要强调但次于统计数字的信息。" },
+      "title": { "displayName": "卡片标题", "purpose": "卡片标题、设置行主文字、开关标签。最常用的信息承载层级。" },
+      "body": { "displayName": "正文", "purpose": "描述文字、状态说明、功能解释。最大行长 65-75 字符。" },
+      "label": { "displayName": "标签", "purpose": "统计标签、分类标题、微注释。小而有力，不喧哗。" }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 1px 3px rgba(26,26,26,0.08)", "purpose": "卡片默认态。极轻微，主要是纯白底色 vs 暖奶油的色差在起作用。" },
+      { "name": "toggle-active", "value": "0 4px 16px rgba(226,130,91,0.25)", "purpose": "大圆形服务开关激活态。唯一使用明显阴影的地方——配合颜色变化暗示激活。" }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "默认缓动。用于颜色过渡、箭头旋转等状态变化。" },
+      { "name": "ease-out-smooth", "value": "cubic-bezier(0.25, 0.8, 0.25, 1)", "purpose": "开关切换、卡片展开等需要更平滑感的过渡。" }
+    ],
+    "breakpoints": [
+      { "name": "phone-portrait", "value": "360dp", "purpose": "手机竖屏基准宽度。" }
+    ]
+  },
+  "components": [
+    {
+      "name": "TonalButton",
+      "kind": "button",
+      "refersTo": "button-tonal",
+      "description": "次要操作按钮。赤陶容器底色 + 深赤陶文字，全圆角胶囊形。",
+      "html": "<button class=\"ds-btn-tonal\">检查更新</button>",
+      "css": ".ds-btn-tonal { background: #FBE9DD; color: #C96E4A; border: none; border-radius: 9999px; padding: 12px 24px; font-family: Roboto, sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-tonal:hover { background: #F5D5C5; } .ds-btn-tonal:focus-visible { outline: 2px solid #E2825B; outline-offset: 2px; }"
+    },
+    {
+      "name": "Elevated Card",
+      "kind": "card",
+      "refersTo": "card-elevated",
+      "description": "内容容器。纯白背景、16dp 圆角、24dp 内边距。通过颜色在暖奶油底上自然区分，不依赖阴影。",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\"><div class=\"ds-icon-circle\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"10\" stroke=\"white\" stroke-width=\"2\"/></svg></div><span class=\"ds-card-title\">卡片标题</span></div><p class=\"ds-card-body\">描述文字，说明这个卡片的内容和用途。</p></div>",
+      "css": ".ds-card { background: #FFFFFF; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(26,26,26,0.08); } .ds-card-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; } .ds-card-title { color: #1A1A1A; font-family: Roboto, sans-serif; font-size: 16px; font-weight: 500; } .ds-card-body { color: #5C5C5C; font-family: Roboto, sans-serif; font-size: 14px; font-weight: 400; line-height: 1.5; margin: 0; }"
+    },
+    {
+      "name": "Icon Circle",
+      "kind": "custom",
+      "refersTo": "icon-circle",
+      "description": "40dp 圆形图标容器。填充主色，白色图标。用于卡片标题区左侧快速识别功能类别。",
+      "html": "<div class=\"ds-icon-circle\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"4\" y=\"6\" width=\"16\" height=\"12\" rx=\"2\" stroke=\"white\" stroke-width=\"2\"/></svg></div>",
+      "css": ".ds-icon-circle { width: 40px; height: 40px; border-radius: 50%; background: #E2825B; display: flex; align-items: center; justify-content: center; flex-shrink: 0; } .ds-icon-circle svg { width: 20px; height: 20px; }"
+    },
+    {
+      "name": "Switch Row",
+      "kind": "input",
+      "refersTo": "switch-row",
+      "description": "标签 + 开关的标准行布局。标签在左，开关在右。56dp 固定行高。",
+      "html": "<div class=\"ds-switch-row\"><span class=\"ds-switch-label\">通知监听</span><span class=\"ds-switch-track\"><span class=\"ds-switch-thumb\"></span></span></div>",
+      "css": ".ds-switch-row { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 24px; } .ds-switch-label { color: #1A1A1A; font-family: Roboto, sans-serif; font-size: 16px; font-weight: 500; } .ds-switch-track { width: 48px; height: 28px; border-radius: 14px; background: #E2825B; position: relative; transition: background 200ms cubic-bezier(0.25, 0.8, 0.25, 1); cursor: pointer; } .ds-switch-thumb { width: 22px; height: 22px; border-radius: 50%; background: #FFFFFF; position: absolute; top: 3px; right: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }"
+    },
+    {
+      "name": "Section Header",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "设置页可折叠分类标题。赤陶橙文字 + 右箭头，点击展开/折叠。",
+      "html": "<div class=\"ds-section-header\"><span class=\"ds-section-title\">核心配置</span><svg class=\"ds-section-arrow\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M9 6l6 6-6 6\" stroke=\"#8B8B8B\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></div>",
+      "css": ".ds-section-header { display: flex; align-items: center; justify-content: space-between; padding: 0 0 12px 0; cursor: pointer; } .ds-section-title { color: #E2825B; font-family: Roboto, sans-serif; font-size: 14px; font-weight: 700; } .ds-section-arrow { transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-section-header.expanded .ds-section-arrow { transform: rotate(90deg); }"
+    },
+    {
+      "name": "Stats Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "三列等宽统计数据行。数字大而有力，标签小而安静。列间细线分隔。",
+      "html": "<div class=\"ds-stats-row\"><div class=\"ds-stat-col\"><span class=\"ds-stat-number\">0</span><span class=\"ds-stat-label\">今日触发</span></div><div class=\"ds-stat-divider\"></div><div class=\"ds-stat-col\"><span class=\"ds-stat-number\">--:--</span><span class=\"ds-stat-label\">最近触发</span></div><div class=\"ds-stat-divider\"></div><div class=\"ds-stat-col\"><span class=\"ds-stat-number\">--</span><span class=\"ds-stat-label\">最新发送者</span></div></div>",
+      "css": ".ds-stats-row { display: flex; align-items: center; } .ds-stat-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; } .ds-stat-number { color: #E2825B; font-family: Roboto, sans-serif; font-size: 36px; font-weight: 700; line-height: 1; } .ds-stat-label { color: #5C5C5C; font-family: Roboto, sans-serif; font-size: 12px; font-weight: 500; } .ds-stat-divider { width: 1px; height: 56px; background: #E8E2DC; }"
+    },
+    {
+      "name": "Bottom Navigation",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "底部双标签导航。选中态赤陶橙色，默认态软石色。",
+      "html": "<nav class=\"ds-bottom-nav\"><div class=\"ds-nav-item active\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\" stroke=\"#E2825B\" stroke-width=\"2\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\" stroke=\"#E2825B\" stroke-width=\"2\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\" stroke=\"#E2825B\" stroke-width=\"2\"/><rect x=\"14\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\" stroke=\"#E2825B\" stroke-width=\"2\"/></svg><span>仪表盘</span></div><div class=\"ds-nav-item\"><svg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\"><circle cx=\"12\" cy=\"12\" r=\"3\" stroke=\"#8B8B8B\" stroke-width=\"2\"/><path d=\"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33\" stroke=\"#8B8B8B\" stroke-width=\"2\"/></svg><span>设置</span></div></nav>",
+      "css": ".ds-bottom-nav { display: flex; background: #FFFFFF; padding: 8px 0; } .ds-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; cursor: pointer; } .ds-nav-item span { font-family: Roboto, sans-serif; font-size: 12px; font-weight: 500; } .ds-nav-item.active span { color: #E2825B; } .ds-nav-item:not(.active) span { color: #8B8B8B; }"
+    },
+    {
+      "name": "Power Toggle",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "主页大圆形服务开关。160dp 圆形，关闭态灰色、开启态赤陶橙 + 8dp 阴影。整个页面唯一使用明显阴影的地方。",
+      "html": "<div class=\"ds-power-toggle active\"><div class=\"ds-power-icon\"><svg width=\"52\" height=\"52\" viewBox=\"0 0 24 24\" fill=\"none\"><path d=\"M12 2v10M18.4 5.6a8 8 0 1 1-12.8 0\" stroke=\"white\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg></div><span class=\"ds-power-label\">运行中</span></div>",
+      "css": ".ds-power-toggle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; transition: background 300ms cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 300ms cubic-bezier(0.25, 0.8, 0.25, 1); } .ds-power-toggle.active { background: #E2825B; box-shadow: 0 4px 16px rgba(226,130,91,0.25); } .ds-power-toggle.inactive { background: #C8C3BF; box-shadow: 0 1px 3px rgba(26,26,26,0.08); } .ds-power-label { font-family: Roboto, sans-serif; font-size: 18px; font-weight: 700; color: #FFFFFF; } .ds-power-icon svg { width: 52px; height: 52px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "安静的同事",
+    "overview": "短信打卡助手是一个静默运行的后台工具。它的视觉系统像一位可靠的同事：话不多、不刷存在感、但每个关键时刻都准时出现。没有装饰，没有炫技——只保留需要的，然后把它们做到位。整体气质偏暖但不甜腻，明亮但不刺眼。主色是一抹温润的赤陶橙，在暖奶油色的底上安静地标记重点。这个系统明确拒绝：设计语言前后不统一、交互状态表达模糊、为装饰而装饰的无意义元素、层层嵌套的复杂菜单。",
+    "keyCharacteristics": [
+      "暖色基调，但不温情泛滥——赤陶橙只是路标，不是氛围灯",
+      "色调分层代替阴影分层——卡片白、表面奶油、背景微暖",
+      "信息层次由颜色对比和间距决定，不由装饰元素决定",
+      "每个组件都有唯一确定的角色，不混用、不临时凑合"
+    ],
+    "rules": [
+      {
+        "name": "The One-Accent Rule",
+        "body": "主色赤陶橙占据不超过 10% 的屏幕面积。它出现的地方就是用户应该看的地方。滥用主色等于没有主色。",
+        "section": "colors"
+      },
+      {
+        "name": "The Tonal-Layer Rule",
+        "body": "不用阴影区分层级。用颜色深浅：底色（暖奶油）→ 卡片（纯白）→ 选中区（赤陶容器）。颜色本身的对比度就是深度信息。",
+        "section": "colors"
+      },
+      {
+        "name": "The Two-Weight Rule",
+        "body": "标题用 Medium (500)，正文用 Regular (400)，大数字用 Bold (700)。不用 Light、Thin、Black——三个字重足以覆盖所有层次。",
+        "section": "typography"
+      },
+      {
+        "name": "The No-Caps Rule",
+        "body": "所有按钮、标签、标题保持常规大小写。不用全大写——中文和数字混合的界面中全大写英文显得突兀。",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "所有表面默认平坦。阴影只在状态变化时出现（开关激活），且一经变化即消失。不通过持续阴影暗示「这个元素更重要」——颜色和排版承担这个职责。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "用赤陶橙标记唯一需要用户注意的信息——开关开启态、统计数字、选中项",
+      "用颜色深浅区分层级——卡片白 > 表面奶油 > 背景奶油",
+      "保持所有卡片内边距统一 24dp，所有卡片间距统一 16dp",
+      "每个交互元素在视觉上自解释——开关有文字标签、状态有副标题、不可用时置灰",
+      "信息层次用字重区分——Bold 数字 > Medium 标题 > Regular 正文"
+    ],
+    "donts": [
+      "设计语言前后不一致——同一组件在不同页面必须同色、同尺寸、同行为",
+      "交互状态模糊——开关必须有明确的视觉开/关差异，权限状态必须有文字说明当前态",
+      "为装饰添加元素——没有渐变背景、没有装饰性图标、没有无意义的动画过渡",
+      "嵌套过深——从首页到任何设置项的路径不超过 2 步",
+      "使用全大写英文按钮或标签——中文界面中全大写英文显得突兀",
+      "在卡片上使用大于 1dp 的单侧彩色边框作为强调——要么完整边框，要么不用"
+    ]
+  }
+}
