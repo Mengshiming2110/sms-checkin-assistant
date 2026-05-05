@@ -72,6 +72,11 @@ class NotificationMonitorService : NotificationListenerService() {
     }
 
     private fun handleWechatNotification(sbn: StatusBarNotification, prefs: android.content.SharedPreferences) {
+        if (!prefs.getBoolean("wechat_enabled", true)) {
+            Log.d(TAG, "微信监听已关闭，跳过")
+            return
+        }
+
         val extras = sbn.notification.extras ?: return
         val title = extras.getString(Notification.EXTRA_TITLE, "")
         val text = extras.getString(Notification.EXTRA_TEXT, "")
@@ -80,24 +85,18 @@ class NotificationMonitorService : NotificationListenerService() {
 
         Log.d(TAG, "收到微信通知 - 发件人: $title, 内容: $text")
 
-        val wechatWhitelistJson = prefs.getString("wechat_whitelist", "[]") ?: "[]"
-        val wechatWhitelist = SmsReceiver.parseKeywords(wechatWhitelistJson)
-
-        if (wechatWhitelist.isEmpty()) {
-            Log.d(TAG, "未配置微信白名单，跳过")
+        val contactsJson = prefs.getString("wechat_contacts", "[]") ?: "[]"
+        val contacts = SmsReceiver.parseKeywords(contactsJson)
+        if (contacts.isNotEmpty() && !contacts.any { title.contains(it) || it.contains(title) }) {
+            Log.d(TAG, "微信联系人 '$title' 不在白名单中，跳过")
             return
         }
 
-        if (!isSenderAllowedInWechat(title, wechatWhitelist)) {
-            Log.d(TAG, "微信用户 '$title' 不在白名单中，跳过")
-            return
-        }
-
-        val wechatKeywordsJson = prefs.getString("wechat_keywords", "[]") ?: "[]"
-        val wechatKeywords = SmsReceiver.parseKeywords(wechatKeywordsJson)
-
-        if (wechatKeywords.isEmpty()) {
-            Log.d(TAG, "未配置微信关键字，跳过")
+        // Use shared keywords (same as SMS)
+        val keywordsJson = prefs.getString("keywords", null) ?: "[]"
+        val keywords = SmsReceiver.parseKeywords(keywordsJson)
+        if (keywords.isEmpty()) {
+            Log.d(TAG, "未配置关键字，跳过")
             return
         }
 
@@ -105,7 +104,7 @@ class NotificationMonitorService : NotificationListenerService() {
             .filter { it.isNotBlank() }
             .joinToString(" ")
 
-        val matchedKeyword = wechatKeywords.find { content.contains(it) }
+        val matchedKeyword = keywords.find { content.contains(it) }
         if (matchedKeyword == null) {
             Log.d(TAG, "微信消息未匹配关键字，跳过")
             return
@@ -145,10 +144,6 @@ class NotificationMonitorService : NotificationListenerService() {
                 SmsReceiver.openDingTalk(context, "通知")
             }
         }
-    }
-
-    private fun isSenderAllowedInWechat(sender: String, whitelist: List<String>): Boolean {
-        return whitelist.any { sender.contains(it) || it.contains(sender) }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {

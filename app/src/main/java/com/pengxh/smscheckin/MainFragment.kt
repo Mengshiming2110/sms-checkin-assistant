@@ -1,3 +1,5 @@
+// LEGACY: This Fragment-based UI is superseded by the Compose UI in MainActivity + ui/screens/.
+// Kept for reference. Not instantiated by the current activity.
 package com.pengxh.smscheckin
 
 import android.Manifest
@@ -27,8 +29,12 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.pengxh.smscheckin.databinding.FragmentMainBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class MainFragment : Fragment() {
 
@@ -44,11 +50,12 @@ class MainFragment : Fragment() {
     private var lastLogHash = 0
     private var toggleDebounce = false
     private var pendingPermCheck = false
+    private val dateFormat = SimpleDateFormat("M月d日 EEEE", Locale.CHINESE)
 
-    private enum class TriggerSource(val tag: String, val colorRes: Int) {
-        SMS("短信", R.color.blue_primary),
-        NOTIFICATION("通知", R.color.green_status),
-        PROACTIVE("主动", R.color.gray_dark)
+    private enum class TriggerSource(val tag: String, val badgeBgRes: Int, val textColorRes: Int) {
+        SMS("短信通知", R.drawable.badge_sms, R.color.terracotta),
+        NOTIFICATION("通知监听", R.drawable.badge_notif, R.color.green_status),
+        PROACTIVE("主动触发", R.drawable.badge_manual, R.color.gray_text)
     }
 
     private val notificationPermissionLauncher = registerForActivityResult(
@@ -82,10 +89,14 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         prefs = requireContext().getSharedPreferences("sms_checkin_prefs", Context.MODE_PRIVATE)
 
+        binding.dateText.text = dateFormat.format(Date())
+
         if (savedInstanceState == null && !guideShown) {
             guideShown = true
             showGuideDialog()
         }
+
+        binding.guideButton.setOnClickListener { showGuideDialog() }
 
         binding.serviceToggle.setOnClickListener {
             if (toggleDebounce) return@setOnClickListener
@@ -111,9 +122,9 @@ class MainFragment : Fragment() {
                         .start()
                     (v.background as? GradientDrawable)?.let { bg ->
                         val current = if (SmsReceiver.isEnabled)
-                            resources.getColor(R.color.blue_primary, null)
+                            resources.getColor(R.color.terracotta, null)
                         else
-                            resources.getColor(R.color.gray_text, null)
+                            resources.getColor(R.color.gray_text_light, null)
                         bg.setColor(darkenColor(current, 0.12f))
                     }
                     v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
@@ -127,9 +138,9 @@ class MainFragment : Fragment() {
                         .start()
                     (v.background as? GradientDrawable)?.let { bg ->
                         bg.setColor(if (SmsReceiver.isEnabled)
-                            resources.getColor(R.color.blue_primary, null)
+                            resources.getColor(R.color.terracotta, null)
                         else
-                            resources.getColor(R.color.gray_text, null))
+                            resources.getColor(R.color.gray_text_light, null))
                     }
                 }
             }
@@ -184,13 +195,12 @@ class MainFragment : Fragment() {
     private fun updateToggleUI(enabled: Boolean) {
         val bg = (binding.serviceToggle.background as? GradientDrawable)
         val fromColor = bg?.color?.defaultColor ?: resources.getColor(
-            if (enabled) R.color.gray_text else R.color.blue_primary, null
+            if (enabled) R.color.gray_text_light else R.color.terracotta, null
         )
         val toColor = resources.getColor(
-            if (enabled) R.color.blue_primary else R.color.gray_text, null
+            if (enabled) R.color.terracotta else R.color.gray_text_light, null
         )
 
-        // Smooth color transition on the oval background
         val colorAnim = ValueAnimator.ofObject(ArgbEvaluator(), fromColor, toColor)
         colorAnim.duration = 400
         colorAnim.interpolator = DecelerateInterpolator()
@@ -200,15 +210,30 @@ class MainFragment : Fragment() {
         colorAnim.start()
 
         binding.serviceToggleText.text = if (enabled) "运行中" else "已暂停"
-        binding.toggleSubText.text = if (enabled) "已开启打卡监听" else "点击开启打卡服务"
+        binding.toggleSubText.text = if (enabled) "已开启打卡监听" else "轻触上方开关以启动监听服务"
         binding.serviceToggleText.setTextColor(
             resources.getColor(if (enabled) R.color.white else R.color.gray_dark, null)
         )
 
-        // Haptic confirmation
+        // Status dot
+        binding.statusDot.backgroundTintList = resources.getColorStateList(
+            if (enabled) R.color.green_status else R.color.gray_text_light, null
+        )
+
+        // Toggle title
+        binding.toggleTitle.text = if (enabled) "服务运行中" else "服务未开启"
+        binding.toggleTitle.setTextColor(
+            resources.getColor(if (enabled) R.color.gray_dark else R.color.gray_text_light, null)
+        )
+
+        // Stats strip dimming
+        binding.statsStrip.alpha = if (enabled) 1f else 0.4f
+
+        // Log section dimming
+        binding.logSection.alpha = if (enabled) 1f else 0.45f
+
         binding.serviceToggle.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK)
 
-        // Concentric rings: scale out + fade in when enabled, reverse when disabled
         if (enabled) {
             binding.concentricRings.visibility = View.VISIBLE
             binding.concentricRings.alpha = 0f
@@ -283,9 +308,16 @@ class MainFragment : Fragment() {
     }
 
     private fun showGuideDialog() {
+        val message = "① 前置条件\n" +
+                "请确认钉钉已开启极速打卡功能，并保持后台运行。\n\n" +
+                "② 必须权限\n" +
+                "短信读取权限 · 通知监听权限\n" +
+                "两项均为系统级授权，仅用于匹配关键字触发打卡。\n\n" +
+                "③ 使用方法\n" +
+                "安装授权 → 配置触发关键字 → 开启服务开关 → 设好即忘。"
         AlertDialog.Builder(requireContext())
-            .setTitle("短信打卡助手")
-            .setMessage("请先在钉钉中开启极速打卡（设置 → 考勤打卡 → 极速打卡），然后授予以下权限：\n\n1. 短信权限 — 监听打卡短信\n2. 通知权限 — 保持后台运行\n3. 悬浮窗权限 — 自动打开钉钉\n\n设置完成后打开服务开关即可。")
+            .setTitle("欢迎使用短信打卡助手")
+            .setMessage(message)
             .setPositiveButton("知道了", null)
             .show()
     }
@@ -297,7 +329,12 @@ class MainFragment : Fragment() {
         val lastRecord = SmsReceiver.getLastRecord(requireContext())
         val timeStr = lastRecord?.first ?: "--:--"
 
-        binding.statsSummary.text = "今日 ${todayCount} 次 · 最近 ${timeStr}"
+        val enabled = SmsReceiver.isEnabled
+
+        binding.statCount.text = if (enabled) todayCount.toString() else "—"
+        binding.statLast.text = if (enabled) timeStr else "—:—"
+        binding.statStatus.text = if (enabled) "运行中" else "未开启"
+        binding.statStatus.textSize = if (enabled) 22f else 16f
     }
 
     private fun refreshLog() {
@@ -306,43 +343,56 @@ class MainFragment : Fragment() {
         if (currentHash == lastLogHash) return
         lastLogHash = currentHash
 
+        val enabled = SmsReceiver.isEnabled
+
         if (records.isEmpty()) {
             binding.emptyState.visibility = View.VISIBLE
-            binding.logContainer.visibility = View.GONE
+            binding.logSection.visibility = View.GONE
             return
         }
 
         binding.emptyState.visibility = View.GONE
-        binding.logContainer.visibility = View.VISIBLE
+        binding.logSection.visibility = View.VISIBLE
+        binding.logSection.alpha = if (enabled) 1f else 0.45f
         binding.logContainer.removeAllViews()
 
-        val count = records.size
         for ((index, record) in records.withIndex()) {
             val itemView = layoutInflater.inflate(R.layout.item_log, binding.logContainer, false)
 
-            itemView.findViewById<TextView>(R.id.timeText).text = record.first // e.g. "08:42"
+            itemView.findViewById<TextView>(R.id.timeText).text = record.first
 
             val source = inferSource(record.second)
             val tagView = itemView.findViewById<TextView>(R.id.sourceTag)
             tagView.text = source.tag
-            tagView.setTextColor(resources.getColor(source.colorRes, null))
+            tagView.setBackgroundResource(source.badgeBgRes)
+            tagView.setTextColor(resources.getColor(source.textColorRes, null))
 
-            itemView.findViewById<TextView>(R.id.senderText).text = record.second
-            itemView.findViewById<TextView>(R.id.contentText).text = record.third
+            itemView.findViewById<TextView>(R.id.senderText).text = record.third
 
-            // Color the timeline dot
-            val dot = itemView.findViewById<View>(R.id.timelineDot)
-            val dotBg = dot.background.mutate() as? GradientDrawable
-            dotBg?.setColor(resources.getColor(source.colorRes, null))
-
-            // Hide the connecting line on the last item
-            val line = itemView.findViewById<View>(R.id.timelineLine)
-            if (index == count - 1) {
-                line.visibility = View.INVISIBLE
+            // Log detail on click
+            itemView.setOnClickListener {
+                showLogDetail(record)
             }
 
             binding.logContainer.addView(itemView)
         }
+
+        if (binding.logContainer.childCount > 0) {
+            // Remove bottom margin from last item
+            val lastChild = binding.logContainer.getChildAt(binding.logContainer.childCount - 1)
+            val lp = lastChild.layoutParams as? android.view.ViewGroup.MarginLayoutParams
+            lp?.bottomMargin = 0
+        }
+    }
+
+    private fun showLogDetail(record: Triple<String, String, String>) {
+        val source = inferSource(record.second)
+        val message = "时间：${record.first}\n\n来源：${record.second}\n\n内容：${record.third}\n\n触发方式：${source.tag}"
+        AlertDialog.Builder(requireContext())
+            .setTitle("触发详情")
+            .setMessage(message)
+            .setPositiveButton("关闭", null)
+            .show()
     }
 
     private fun inferSource(sender: String): TriggerSource {
@@ -356,9 +406,9 @@ class MainFragment : Fragment() {
     private fun animateTogglePress(view: View, onComplete: () -> Unit) {
         (view.background as? GradientDrawable)?.let { bg ->
             bg.setColor(if (SmsReceiver.isEnabled)
-                resources.getColor(R.color.blue_primary, null)
+                resources.getColor(R.color.terracotta, null)
             else
-                resources.getColor(R.color.gray_text, null))
+                resources.getColor(R.color.gray_text_light, null))
         }
         view.animate()
             .scaleX(1f).scaleY(1f)

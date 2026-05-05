@@ -13,17 +13,85 @@
         android:paddingHorizontal="20dp"
         android:paddingTop="8dp">
 
-        <!-- 大圆形开关 + 同心圆环 -->
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/statusDot"
+                        android:layout_width="7dp"
+                        android:layout_height="7dp"
+                        android:background="@drawable/circle_bg"
+                        android:backgroundTint="@color/green_status" />
+
+                    <TextView
+                        android:id="@+id/dateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+                        android:textColor="@color/gray_text_light" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:textColor="@color/gray_dark"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/guideButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/circle_bg"
+                android:backgroundTint="@color/card_bg"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="?"
+                    android:textColor="@color/gray_text_light"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <!-- Large Circular Toggle -->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:gravity="center"
-            android:paddingVertical="32dp">
+            android:paddingVertical="16dp">
 
             <ImageView
                 android:id="@+id/concentricRings"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
                 android:layout_gravity="center"
                 android:src="@drawable/concentric_rings"
                 android:contentDescription="@null"
@@ -31,8 +99,8 @@
 
             <FrameLayout
                 android:id="@+id/serviceToggle"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+                android:layout_width="126dp"
+                android:layout_height="126dp"
                 android:layout_gravity="center"
                 android:background="@drawable/toggle_bg_off"
                 android:clickable="true"
@@ -48,8 +116,8 @@
 
                     <ImageView
                         android:id="@+id/serviceToggleIcon"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:src="@drawable/ic_power"
                         android:contentDescription="@string/service_title" />
 
@@ -57,45 +125,139 @@
                         android:id="@+id/serviceToggleText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="8dp"
                         android:text="已暂停"
                         android:textColor="@color/white"
-                        android:textSize="18sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
-
                 </LinearLayout>
-
             </FrameLayout>
-
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/toggleTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
+            android:text="服务未开启"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:textColor="@color/gray_dark"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/toggleSubText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="-16dp"
-            android:layout_marginBottom="24dp"
-            android:text="点击开启打卡服务"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            android:textColor="@color/gray_text" />
+            android:layout_marginTop="2dp"
+            android:text="轻触上方开关以启动监听服务"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:textColor="@color/gray_text_light" />
 
-        <!-- 极简统计行 -->
-        <TextView
-            android:id="@+id/statsSummary"
+        <!-- Stats Strip -->
+        <LinearLayout
+            android:id="@+id/statsStrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:gravity="center"
-            android:text="今日 0 次 · 最近 --:--"
-            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            android:textColor="@color/gray_text" />
+            android:layout_marginTop="28dp"
+            android:background="@drawable/card_bg_rounded"
+            android:elevation="1dp"
+            android:orientation="horizontal"
+            android:paddingVertical="20dp">
 
-        <!-- 空态 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/statCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textAppearance="@style/StatsNumberText"
+                    android:textColor="@color/terracotta" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="今日触发"
+                    android:textAppearance="@style/StatsLabelText"
+                    android:textColor="@color/gray_text_light" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/statLast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—:—"
+                    android:textAppearance="@style/StatsNumberText"
+                    android:textColor="@color/terracotta" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="最后触发"
+                    android:textAppearance="@style/StatsLabelText"
+                    android:textColor="@color/gray_text_light" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="36dp"
+                android:layout_gravity="center"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/statStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="未开启"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                    android:textColor="@color/terracotta"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="运行状态"
+                    android:textAppearance="@style/StatsLabelText"
+                    android:textColor="@color/gray_text_light" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Empty State -->
         <LinearLayout
             android:id="@+id/emptyState"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
             android:gravity="center"
             android:orientation="vertical"
             android:paddingVertical="48dp"
@@ -106,24 +268,42 @@
                 android:layout_height="wrap_content"
                 android:text="暂无触发记录"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-                android:textColor="@color/gray_text" />
+                android:textColor="@color/gray_text_light" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="收到含关键字的短信或通知后自动记录"
+                android:text="服务未开启，暂无触发记录"
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                 android:textColor="@color/gray_text_light" />
         </LinearLayout>
 
-        <!-- 触发日志卡片列表 -->
+        <!-- Trigger Log Section -->
         <LinearLayout
-            android:id="@+id/logContainer"
+            android:id="@+id/logSection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
             android:orientation="vertical"
-            android:visibility="gone" />
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="触发记录"
+                android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                android:textColor="@color/terracotta"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/logContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
 
     </LinearLayout>
 

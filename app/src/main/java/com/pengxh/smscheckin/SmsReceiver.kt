@@ -34,6 +34,12 @@ class SmsReceiver : BroadcastReceiver() {
                 keywordsList.addAll(value)
             }
 
+        // Source switches — false means skip that source entirely
+        var smsEnabled = true
+        var smsNumbers = mutableListOf<String>()
+        var wechatEnabled = true
+        var wechatContacts = mutableListOf<String>()
+
         private var whitelistList = mutableListOf<String>()
         var whitelist: List<String>
             get() = whitelistList.toList()
@@ -257,15 +263,17 @@ class SmsReceiver : BroadcastReceiver() {
             keywordsList.clear()
             keywordsList.addAll(parseKeywords(keywordsJson))
 
-            val whitelistJson = prefs.getString("whitelist", "[]") ?: "[]"
-            whitelistList.clear()
-            whitelistList.addAll(parseKeywords(whitelistJson))
+            smsEnabled = prefs.getBoolean("sms_enabled", true)
+            val smsNumbersJson = prefs.getString("sms_numbers", "[]") ?: "[]"
+            smsNumbers.clear()
+            smsNumbers.addAll(parseKeywords(smsNumbersJson))
+
+            wechatEnabled = prefs.getBoolean("wechat_enabled", true)
+            val wechatContactsJson = prefs.getString("wechat_contacts", "[]") ?: "[]"
+            wechatContacts.clear()
+            wechatContacts.addAll(parseKeywords(wechatContactsJson))
 
             delay = prefs.getLong("delay", 0L)
-
-            val wechatWhitelistJson = prefs.getString("wechat_whitelist", "[]") ?: "[]"
-            wechatWhitelist.clear()
-            wechatWhitelist.addAll(parseKeywords(wechatWhitelistJson))
 
             val wechatKeywordsJson = prefs.getString("wechat_keywords", "[]") ?: "[]"
             wechatKeywords.clear()
@@ -289,8 +297,12 @@ class SmsReceiver : BroadcastReceiver() {
 
                 Log.d(TAG, "收到短信 - 发件人: $sender, 内容: $body")
 
-                if (!isSenderAllowed(sender)) {
-                    Log.d(TAG, "发送者 '$sender' 不在白名单中，跳过")
+                if (!smsEnabled) {
+                    Log.d(TAG, "短信监听已关闭，跳过")
+                    continue
+                }
+                if (smsNumbers.isNotEmpty() && !smsNumbers.any { sender.contains(it) || it.contains(sender) }) {
+                    Log.d(TAG, "发送者 '$sender' 不在号码白名单中，跳过")
                     continue
                 }
 

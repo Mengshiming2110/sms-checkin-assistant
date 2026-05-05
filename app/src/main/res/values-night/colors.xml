@@ -1,44 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Accent: Cool Steel Blue (lifted for dark backgrounds) -->
-    <color name="blue_primary">#FF8AACBD</color>
-    <color name="blue_dark">#FF9FBECE</color>
-    <color name="blue_darker">#FFB0CFDE</color>
-    <color name="blue_container">#FF2A3A44</color>
-    <color name="blue_secondary">#FF8AACBD</color>
-    <color name="blue_light">#FF2A3A44</color>
+    <!-- Primary: Terracotta lifted for dark backgrounds -->
+    <color name="terracotta">#FFF0A080</color>
+    <color name="terracotta_deep">#FFE09070</color>
+    <color name="terracotta_container">#FF4A2A20</color>
+    <color name="terracotta_light">#FF3A2018</color>
 
     <!-- Semantic: Success -->
     <color name="green_status">#FF8BB5A0</color>
-    <color name="green_dark">#FF9DC5B0</color>
     <color name="green_container">#FF2D4A3C</color>
     <color name="green_light">#FF2D4A3C</color>
 
     <!-- Semantic: Error -->
     <color name="red_error">#FFE88C7C</color>
-    <color name="red_dark">#FFF0A89A</color>
     <color name="red_container">#FF4A2822</color>
 
-    <!-- Legacy tokens -->
-    <color name="orange_status">#FF8AACBD</color>
-    <color name="orange_container">#FF2A3A44</color>
-
-    <color name="purple_accent">#FF8AACBD</color>
-    <color name="purple_container">#FF2D2D30</color>
-
-    <!-- Surfaces (dark, lifted from true black) -->
+    <!-- Surfaces -->
     <color name="surface">#FF1A1C1F</color>
     <color name="surface_variant">#FF2A2C30</color>
     <color name="surface_container">#FF1A1C1F</color>
-    <color name="surface_container_low">#FF141517</color>
     <color name="surface_container_high">#FF282A2E</color>
 
     <!-- Neutrals -->
-    <color name="gray_bg">#FF1A1C1F</color>
-    <color name="gray_light">#FF282A2E</color>
+    <color name="gray_dark">#FFF6F7F8</color>
     <color name="gray_text">#FFB8BCC0</color>
     <color name="gray_text_light">#FF8B8F94</color>
-    <color name="gray_dark">#FFF6F7F8</color>
     <color name="gray_divider">#FF3A3C40</color>
 
     <color name="white">#FF1A1C1F</color>
@@ -49,12 +35,29 @@
     <color name="card_stroke">#FF3A3C40</color>
     <color name="divider">#FF3A3C40</color>
 
-    <color name="timeline_dot">#FF8AACBD</color>
+    <color name="timeline_dot">#FFF0A080</color>
     <color name="timeline_line">#FF3A3C40</color>
 
-    <color name="icon_bg_primary">#FF8AACBD</color>
+    <color name="icon_bg_primary">#FFF0A080</color>
     <color name="icon_bg_success">#FF8BB5A0</color>
-    <color name="icon_bg_warning">#FF8AACBD</color>
+    <color name="icon_bg_warning">#FFF0A080</color>
     <color name="icon_bg_error">#FFE88C7C</color>
     <color name="icon_tint">#FF1A1C1F</color>
+
+    <!-- Legacy tokens for compat -->
+    <color name="blue_primary">@color/terracotta</color>
+    <color name="blue_dark">@color/terracotta_deep</color>
+    <color name="blue_darker">@color/terracotta_deep</color>
+    <color name="blue_secondary">@color/terracotta</color>
+    <color name="blue_container">@color/terracotta_container</color>
+    <color name="blue_light">@color/terracotta_light</color>
+    <color name="green_dark">#FF9DC5B0</color>
+    <color name="red_dark">#FFF0A89A</color>
+    <color name="orange_status">@color/terracotta</color>
+    <color name="orange_container">@color/terracotta_container</color>
+    <color name="purple_accent">@color/terracotta</color>
+    <color name="purple_container">#FF2D2D30</color>
+    <color name="surface_container_low">#FF141517</color>
+    <color name="gray_bg">#FF1A1C1F</color>
+    <color name="gray_light">#FF282A2E</color>
 </resources>

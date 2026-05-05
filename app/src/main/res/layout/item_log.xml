@@ -1,87 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/card_bg_rounded"
+    android:clickable="true"
+    android:elevation="1dp"
+    android:focusable="true"
     android:orientation="horizontal"
-    android:paddingVertical="14dp"
-    android:paddingHorizontal="4dp">
+    android:padding="12dp">
 
-    <!-- 时间线左侧 -->
-    <LinearLayout
-        android:layout_width="32dp"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+    <!-- Left: time -->
+    <TextView
+        android:id="@+id/timeText"
+        android:layout_width="58dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+        android:textColor="@color/gray_text_light"
+        android:textStyle="bold" />
 
-        <View
-            android:id="@+id/timelineDot"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/timeline_dot_bg" />
-
-        <View
-            android:id="@+id/timelineLine"
-            android:layout_width="2dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/divider" />
-
-    </LinearLayout>
-
-    <!-- 内容卡片 -->
+    <!-- Center: badge + preview -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
         android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/sourceTag"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/timeText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-                android:textColor="@color/gray_dark"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/sourceTag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp"
-                android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
-                android:textColor="@color/blue_primary" />
-        </LinearLayout>
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/senderText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            android:textColor="@color/gray_text" />
-
-        <TextView
-            android:id="@+id/contentText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:maxLines="1"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"
-            android:textColor="@color/gray_text_light" />
-
+            android:textColor="@color/gray_dark" />
     </LinearLayout>
+
+    <!-- Right: chevron -->
+    <ImageView
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_chevron_right"
+        android:contentDescription="@null"
+        android:tint="@color/gray_text_light" />
 
 </LinearLayout>
